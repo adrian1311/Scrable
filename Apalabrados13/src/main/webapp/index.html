@@ -1,0 +1,467 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="google-signin-client_id" content="127708250780-kttj40u61f82kkf7iq6ercug5b4kc2ng.apps.googleusercontent.com">
+
+	<!-- Bootstrap style -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+	<!-- Tablero CSS -->
+    <link rel="stylesheet" type="text/css" href="css/tablero.css">
+	 <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://apis.google.com/js/platform.js" async defer></script>
+
+</head>
+
+<body>
+<div class="container">
+	<div class="row" data-bind="visible : shouldShowTablero">
+			<!-- COLUMNA 1 DEL GRID -->
+			<div class="col-4">
+
+				<div class="controlPanel">
+					<!-- FILA COMPONENTES CUENTA ATRAS -->
+					<div class="row">
+						<div class="col-12" style="text-align:center">
+						</br>
+						 </br>
+						 <!--
+							<button type="button" onclick="initializeClock('clockdiv',deadline)">Empezar turno</button>-->
+						</div>
+
+					</div>
+
+					<div class="row">
+						<div class="col-12" style="text-align:center">
+							</br>
+							<div id="clockdiv">
+								<div>
+									<span class="minutes"></span>
+									<div class="smalltext">Minutes</div>
+								</div>
+								<div>
+									<span class="seconds"></span>
+									<div class="smalltext">Seconds</div>
+								</div>
+							</div>
+							<br><br>
+						</div>
+					</div>
+					</br>
+					<!-- FILA COMPONENTES TIEMPO Y PUNTUACIONES -->
+					<div class="row">
+						<div class="col-12">
+							<table class="table" style="text-align:center">
+								<thead>
+									<tr>
+										<th>Turno</th>
+										<th>JUGADOR</th>
+										<th>PUNTUACIONES              <img src=".\iconos\info.png"/></th>
+
+									</tr>
+								</thead>
+									<tbody>
+									<tr>
+									<td data-bind="html: miTurno"></td>
+									<td data-bind="html: playerA"></td>
+									<td data-bind="html: misPuntos"></td>
+									</tr>
+									<tr>
+									<td data-bind="html: turnoOponente"></td>
+									<td data-bind="html: playerB"></td>
+									<td data-bind="html: otroPuntos"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="row">
+					</br></br></br>
+					</div>
+					<!-- FILA COMPONENTES FICHAS JUGADOR -->
+					<div class="row">
+						<div class="col-12">
+								<div class="letters-wrapper">
+									<!-- ko using : tablero -->
+									<ul id="let" class="letters">
+										Panel:
+										<!-- ko foreach : panel -->
+										<li data-bind="html : $data, click : function() { $parent.seleccionar($data); }"></li>
+										<!-- /ko -->
+										</ul>
+										<br>
+										<!--button data-bind="click : jugar">Jugar</button-->
+									<!-- /ko -->
+							</div>
+						</div>
+					</div>
+					<!-- FILA COMPONENTES BOTONES JUGADAS -->
+					<div class="row">
+						<div class="col-12">
+							<img src="./img/shelf.jpg" width="100%"/>
+						</div>
+					</div>
+
+				<div id="botonera">
+					<div class="row">
+						<div class="col-12">
+							<div class="buttons-wrapper">
+								<ul class="buttons">
+								<!-- ko using : tablero -->
+										<li><button type="button" id="jugar" class="btn btn-primary"  data-bind="click : jugar" title="Comprobar" ><img src="./iconos/check.png" /></button></li>
+										<li><button type="button" id="llamar" class="btn btn-primary" title="Llamar" data-bind="click : llamar"><img src="./iconos/back.png" /></button></li>
+										<li><button type="button" id="cambio" class="btn btn-primary" data-bind="click : cambioLetras" title="Cambiar"><img src="./iconos/change.png"/></button></li>
+										<li><button type="button" id="mezcla" class="btn btn-primary" title="Mezclar" data-bind="click : mezclar"><img src="./iconos/mix.png"/></button></li>
+										<li><button type="button" id="pasar" class="btn btn-primary" data-bind="click : pasarTurno" title="Pasar" ><img src="./iconos/pass.png"/></button></li>
+										<li><button type="button" id="rendir" class="btn btn-primary" data-bind="click : rendirse" title="Rendirse"><img src="./iconos/flag.png"/></button></li>
+								<!-- /ko -->
+								</ul>
+						</div>
+				</div>
+				</div>
+			</div>
+			
+
+				</div>
+			</div>
+
+			<!-- COLUMNA 2 DEL GRID -->
+			<div class="col-8">
+				<!-- TABLERO -->
+				<table id="board" class="scrabble-table mdl-shadow--24dp" width="100%">
+								<tbody>
+									<!-- ko using : tablero -->
+										<!-- ko foreach : { data: casillas, as: 'fila' } -->
+										<tr>
+											<!-- ko foreach : { data: fila, as: 'celda' } -->
+												<!-- ko using : celda -->
+												<td data-bind="class : clazz, click : seleccionar">
+													<label data-bind="html : letter"></label>
+												</td>
+												<!-- /ko -->
+											<!-- /ko -->
+										</tr>
+										<!-- /ko -->
+									<!-- /ko -->
+								</tbody>
+							</table>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<!-- ROW DE CABECERA -->
+		<div class="row alert alert-primary" style="display:none">
+			<div class="col-12"><h3>Bienvenido al juego Apalabreitor</h3>
+			This system uses an h2, in-memory database: <a href="http://localhost:8080/h2-console" target='_new'>http://localhost:8080/h2-console</a>
+			</div>
+		</div>
+		<!-- ROW DE LOGS -->
+		<div class="row">
+            	<div class="col-12">
+            		<div class="form-group">
+  						<label for="comment">Logs:</label>
+  						<textarea class="form-control" rows="2" id="message" data-bind="html : message" disabled></textarea>
+					</div>
+				</div>
+            </div>
+		<!-- ROW DE REGISTRO Y LOGIN -->
+		<div class="row" id="divreglogin" data-bind="visible: shouldShowRegLog">
+		  	<div class="col-md-6 col-md-offset-3">
+  				<div class="panel panel-login">
+  					<div class="panel-heading">
+  						<div class="row">
+  							<div class="col-xs-6">
+  								<a href="#" class="active" id="login-form-link">Login</a>
+  							</div>
+  							<div class="col-xs-6">
+  								<a href="#" id="register-form-link">Register</a>
+  							</div>
+  						</div>
+  						<hr>
+  					</div>
+
+					<!-- PANEL DE LOGIN -->
+					<div class="panel-body">
+  						<div class="row">
+  							<div class="col-lg-12">
+  								<form id="login-form"  method="post" role="form" style="display: block;">
+  								<div class="g-signin2" data-onsuccess="onSignIn"></div>
+  									<div class="form-group">
+                      					<label for="exampleInputEmail1">Username</label> <!--MACARIO tiene data-dind valor email -->
+  										<input type="text" name="username" id="loginUserName" data-bind="value : userName" tabindex="1" class="form-control" placeholder="Username" value="">
+  									</div>
+  									<div class="form-group">
+                    				    <label for="exampleInputPassword1">Password</label>
+  										<input type="password" name="password" id="password" data-bind="value : pwd" tabindex="2" class="form-control" placeholder="Password">
+  									</div>
+  									<div class="form-group text-center">
+  										<!--  input type="checkbox" tabindex="3" class="" name="remember" id="remember"-->
+  									</div>
+  									<div class="form-group">
+  										<div class="row">
+  											<div class="col-sm-6 col-sm-offset-3">
+                          						<!--  button type="submit" class="btn btn-primary" data-bind="click : login">LoginMaca</button>-->
+  						           				<!--<button type="submit" class="btn btn-primary" data-bind="click : getUsers">Recuperar usuarioMaca</button>-->
+  						           				<input type="submit"  data-bind="click : login" name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login" value="Log In">
+                          						<!--<input type="submit" id="login-submit" class="form-control btn btn-login" data-bind="click : nuevaPartida" value="Nueva partida">-->
+  						            			<!--<input type="submit" id="login-submit" class="form-control btn btn-login" data-bind="click : unirAPartida" value="Unirme a partida">-->
+  												
+  											</div>
+  										</div>
+  									</div>
+  									<div class="form-group">
+  										<div class="row">
+  											<div class="col-lg-12">
+  												<div class="text-center">
+  													<!--  a href="https://phpoll.com/recover" tabindex="5" class="forgot-password">Forgot Password?</a-->
+  												</div>
+  											</div>
+  										</div>
+  									</div>
+  								</form>
+
+  								<!-- PANEL DE REGISTER -->
+  								<form id="register-form" action="#" method="post" role="form" style="display: none;">
+  									<div class="form-group">
+                      					<label for="exampleInputEmail1">Email address</label>
+  										<input type="email" name="email" id="inputEmail" tabindex="1" class="form-control" placeholder="Email Address" value="">
+  									</div>
+  									<div class="form-group">
+                      					<label for="exampleInputUsername">User's name</label>
+  										<input type="text" name="username" id="inputUserName" tabindex="1" class="form-control" placeholder="Username" value="">
+  									</div>
+  									<div class="form-group">
+                      					<label for="exampleInputPassword1">Password</label>
+  										<input type="password" name="password" id="inputPwd1" tabindex="2" class="form-control" placeholder="Password">
+  									</div>
+  									<div class="form-group">
+                      					<label for="exampleInputPassword2">Confirm Password</label>
+  										<input type="password" name="confirm-password" id="inputPwd2" tabindex="2" class="form-control" placeholder="Confirm Password">
+  									</div>
+  									<div class="form-group">
+  										<div class="row">
+  											<div class="col-sm-6 col-sm-offset-3">
+                         					   <!--  button data-bind="click : register" class="btn btn-primary">RegisterMaca</button>-->
+  												<input type="submit" data-bind="click : register" name="register-submit" id="register-submit" tabindex="4" class="form-control btn btn-register" value="Register Now">
+  											</div>
+  										</div>
+									  	<table>
+									  		<tr>
+												<td colspan="2"><label id="message" data-bind="html : message"></label></td>
+											</tr>
+										</table>
+  									</div>
+  								</form>
+  							</div>
+  						</div>
+  					</div>
+  				</div>
+  			</div>
+  		</div>
+  	</div>
+
+
+	<div class="container">
+		<div class="row" data-bind="visible : shouldShowWelcome">
+			<div class="col-md-6 col-md-offset-3">
+				<div class="panel panel-login">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-lg-4">
+								<div class="parent-selector">
+									<div class="view-image">
+										<img src="./img/avatars/user.png" />
+										<div class="button" id="button-other">
+											<span>Other</span>
+										</div>
+									</div>
+
+									<div class="select-image" style="display: none;">
+										<div class="list-image">
+											<img class="active" src="./img/avatars/man.png" alt="1" /> <img
+												src="./img/avatars/man-1.png" alt="2" /> <img
+												src="./img/avatars/man-2.png" alt="2" /> <img
+												src="./img/avatars/man-3.png" alt="2" /> <img
+												src="./img/avatars/woman.png" alt="2" /> <img
+												src="./img/avatars/woman-1.png" alt="2" /> <img
+												src="./img/avatars/woman-2.png" alt="2" /> <img
+												src="./img/avatars/woman-3.png" alt="2" />
+										</div>
+										<div class="button" id="button-confirm">
+											<span>Confirm</span>
+										</div>
+									</div>
+
+								</div>
+							</div>
+
+							<div class="col-lg-8">
+								<div class="row">
+									<table class="table" style="text-align: right">
+										<tbody>
+											<tr>
+												<td style="width:75%"><h4>Personal data</h4></td>
+												<!--td><a href=./index2.html target=_blank><button
+															type="button" class="btn btn-primary">
+															<img src="./iconos/logout.png" />
+														</button></a></td-->
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<form id="login-form" action="https://phpoll.com/login/process"
+									method="post" role="form" style="display: block;">
+									<div class="form-group">
+										<label for="exampleInputName1">User's name</label> 
+										<label
+											type="text" class="form-control" id="loginUserName"
+											data-bind="html : userName"></label>
+										<!--<input type="text" class="form-control" id="loginUserName" data-bind="value : email" placeholder="Enter email">-->
+									</div>
+									<!--div class="form-group">
+										<label for="exampleInputEmail1">User's email</label> 
+										<label
+											type="text" class="form-control" id="inputEmail"
+											data-bind="html : email"></label>
+										<!--<input type="email" name="email" id="email" tabindex="2" class="form-control" placeholder="Email Address">-->
+									
+									</div-->
+								</form>
+							</div>
+						</div>
+					</div>
+
+					<div class="panel-heading">
+						<hr>
+						</br>
+						<div class="row">
+							<div class="col-6">
+								<input type="submit" id="login-submit"
+									class="form-control btn btn-login"
+									data-bind="click : nuevaPartida" value="Nueva partida">
+							</div>
+							<div class="col-6">
+								<input type="submit" id="login-submit"
+									class="form-control btn btn-login"
+									data-bind="click : unirAPartida" value="Unirme a partida">
+							</div>
+						</div>
+						</br>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="row" data-bind="visible : shouldShowWinner">
+			<div class="col-md-6 col-md-offset-3">
+				<div class="panel panel-login" style="background-image: url('./img/winner.jpeg'); width: 350; height: 350;  background-size: contain; text-align:center;">
+					<div class="panel-body" >
+						<div class="row">
+							<div class="col-lg-12">
+							<br><br>
+							<h2><strong>El ganador es: </strong></h2>
+							<strong><h2 data-bind="html : ganador"></h2></strong>
+							<br><br>
+							<label type="text" data-bind="html : perdedor"></label><label> &nbsp; &nbsp; ha perdido</label>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<script src="https://knockoutjs.com/downloads/knockout-3.5.0.js"></script>
+	<script src="app/user.js"></script>
+
+	<script id="rendered-js">
+		function shuffleList() {
+			var list, i, b;
+			list = document.getElementById("let");
+			b = list.getElementsByTagName("LI");
+			if (b.length != 1) {
+				for (i = 0; i < b.length - 1; i++) {
+					b[i].parentNode.insertBefore(b[i + 1], b[i]);
+				}
+			}
+
+		}
+	</script>
+
+
+	<script type="text/javascript">
+		$(function() {
+
+			$('#login-form-link').click(function(e) {
+				$("#login-form").delay(100).fadeIn(100);
+				$("#register-form").fadeOut(100);
+				$('#register-form-link').removeClass('active');
+				$(this).addClass('active');
+				e.preventDefault();
+			});
+			$('#register-form-link').click(function(e) {
+				$("#register-form").delay(100).fadeIn(100);
+				$("#login-form").fadeOut(100);
+				$('#login-form-link').removeClass('active');
+				$(this).addClass('active');
+				e.preventDefault();
+			});
+
+		});
+	</script>
+
+	<script type="text/javascript">
+		var elementSelected = null;
+		var typeSelected = false;
+
+		$(document).on('click', '.list-image > img', function() {
+			$('.list-image > img').each(function() {
+				$(this).removeClass('active');
+			})
+			$(this).addClass('active');
+			elementSelected = $(this);
+			typeSelected = false;
+		});
+
+		$(document).on('input', '#text-src', function() {
+			$('.list-image > img').each(function() {
+				$(this).removeClass('active');
+			})
+			elementSelected = $(this);
+			typeSelected = true;
+		})
+
+		$(document).on(
+				'click',
+				'#button-confirm',
+				function() {
+					$('.select-image').hide();
+					if (typeSelected == true) {
+						$('.view-image > img').attr('src',
+								elementSelected.val());
+					} else {
+						$('.view-image > img').attr('src',
+								elementSelected.attr('src'));
+					}
+					$('.view-image').fadeIn('high');
+				})
+
+		$(document).on('click', '#button-other', function() {
+			$('.view-image').hide();
+			$('.select-image').fadeIn('high');
+		})
+	</script>
+
+
+
+</body>
+
+</html>

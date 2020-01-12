@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Built-By: Adrian
+Build-Jdk: 12.0.1
+Implementation-Title: apalabreitor
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: edu.uclm.esi
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-boot
+ -starter-parent/apalabreitor
+Created-By: Maven Integration for Eclipse
+
